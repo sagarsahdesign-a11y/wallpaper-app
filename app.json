@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "wallpaper-app",
+    "slug": "wallpaper-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.anonymous.wallpaperapp"
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-asset"
+    ]
+  }
+}
