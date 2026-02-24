@@ -1,5 +1,6 @@
-// App.js - Market Ready
+// App.js - Auth-First Flow (like Facebook/Instagram)
 import React, { useState, useEffect } from "react";
+import { View, ActivityIndicator, StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -19,9 +20,9 @@ import ProfileScreen from "./screens/ProfileScreen";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-// ✅ ONLY your email sees Admin tab
 const ADMIN_EMAIL = "mfl9815268699@gmail.com";
 
+// ── Bottom Tabs (only shown when logged in) ──
 function MainTabs({ isAdmin }) {
   return (
     <Tab.Navigator
@@ -38,7 +39,7 @@ function MainTabs({ isAdmin }) {
         tabBarActiveTintColor: "#6C63FF",
         tabBarInactiveTintColor: "#444",
         tabBarLabelStyle: { fontSize: 10, fontWeight: "700", marginTop: -2 },
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ focused, color }) => {
           const icons = {
             Home: focused ? "home" : "home-outline",
             Search: focused ? "search" : "search-outline",
@@ -77,19 +78,52 @@ export default function App() {
     return unsub;
   }, []);
 
-  if (loading) return null;
+  // Loading splash
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <StatusBar style="light" />
+        <Ionicons name="images" size={56} color="#6C63FF" />
+        <ActivityIndicator size="large" color="#6C63FF" style={{ marginTop: 20 }} />
+      </View>
+    );
+  }
+
+  // ✅ NOT LOGGED IN → Show Login/Signup first (like Facebook)
+  if (!user) {
+    return (
+      <NavigationContainer>
+        <StatusBar style="light" />
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Auth" component={ProfileScreen} />
+        </Stack.Navigator>
+        <Toast />
+      </NavigationContainer>
+    );
+  }
+
+  // ✅ LOGGED IN → Show main app with tabs
+  const isAdmin = user.email === ADMIN_EMAIL;
 
   return (
     <NavigationContainer>
       <StatusBar style="light" />
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Main">
-          {() => <MainTabs isAdmin={user?.email === ADMIN_EMAIL} />}
+          {() => <MainTabs isAdmin={isAdmin} />}
         </Stack.Screen>
         <Stack.Screen name="Detail" component={DetailScreen} options={{ presentation: "modal" }} />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
       <Toast />
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    backgroundColor: "#0A0A0A",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
