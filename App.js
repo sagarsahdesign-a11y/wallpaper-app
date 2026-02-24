@@ -1,4 +1,4 @@
-// App.js
+// App.js - Market Ready
 import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -9,47 +9,57 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import Toast from "react-native-toast-message";
 
-// Screens
 import HomeScreen from "./screens/HomeScreen";
 import FavoritesScreen from "./screens/FavoritesScreen";
 import DetailScreen from "./screens/DetailScreen";
 import UploadScreen from "./screens/UploadScreen";
-import LoginScreen from "./screens/LoginScreen";
 import SearchScreen from "./screens/SearchScreen";
 import ProfileScreen from "./screens/ProfileScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-// Bottom tab navigation
+// ✅ ONLY your email sees Admin tab
+const ADMIN_EMAIL = "mfl9815268699@gmail.com";
+
 function MainTabs({ isAdmin }) {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: "#0F0F0F",
+          backgroundColor: "#0D0D0D",
           borderTopColor: "#1A1A1A",
+          borderTopWidth: 1,
           paddingBottom: 8,
-          paddingTop: 8,
-          height: 65,
+          paddingTop: 6,
+          height: 62,
         },
         tabBarActiveTintColor: "#6C63FF",
-        tabBarInactiveTintColor: "#666",
+        tabBarInactiveTintColor: "#444",
+        tabBarLabelStyle: { fontSize: 10, fontWeight: "700", marginTop: -2 },
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-          if (route.name === "Home") iconName = focused ? "home" : "home-outline";
-          else if (route.name === "Search") iconName = focused ? "search" : "search-outline";
-          else if (route.name === "Favorites") iconName = focused ? "heart" : "heart-outline";
-          else if (route.name === "Upload") iconName = focused ? "cloud-upload" : "cloud-upload-outline";
-          return <Ionicons name={iconName} size={size} color={color} />;
+          const icons = {
+            Home: focused ? "home" : "home-outline",
+            Search: focused ? "search" : "search-outline",
+            Favorites: focused ? "heart" : "heart-outline",
+            Admin: focused ? "cloud-upload" : "cloud-upload-outline",
+            Profile: focused ? "person" : "person-outline",
+          };
+          return <Ionicons name={icons[route.name]} size={22} color={color} />;
         },
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Favorites" component={FavoritesScreen} />
-      {isAdmin && <Tab.Screen name="Admin" component={UploadScreen} />}
+      {isAdmin && (
+        <Tab.Screen
+          name="Admin"
+          component={UploadScreen}
+          options={{ tabBarBadge: "🔒", tabBarBadgeStyle: { fontSize: 8, minWidth: 16, height: 16 } }}
+        />
+      )}
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
@@ -59,34 +69,25 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // YOUR admin email — change this to your email
-  const ADMIN_EMAIL = "mfl9815268699@gmail.com";
-
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
+    const unsub = onAuthStateChanged(auth, (u) => {
       setUser(u);
       setLoading(false);
     });
-    return unsubscribe;
+    return unsub;
   }, []);
 
   if (loading) return null;
-
-  const isAdmin = user?.email === ADMIN_EMAIL;
 
   return (
     <NavigationContainer>
       <StatusBar style="light" />
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Main">
-          {() => <MainTabs isAdmin={isAdmin} />}
+          {() => <MainTabs isAdmin={user?.email === ADMIN_EMAIL} />}
         </Stack.Screen>
-        <Stack.Screen
-          name="Detail"
-          component={DetailScreen}
-          options={{ presentation: "modal" }}
-        />
-        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Detail" component={DetailScreen} options={{ presentation: "modal" }} />
+        <Stack.Screen name="Profile" component={ProfileScreen} />
       </Stack.Navigator>
       <Toast />
     </NavigationContainer>

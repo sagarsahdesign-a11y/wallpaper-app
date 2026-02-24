@@ -1,0 +1,29 @@
+{
+    "project_info": {
+        "project_number": "164948034426",
+        "project_id": "wallpaperapp-b6822",
+        "storage_bucket": "wallpaperapp-b6822.firebasestorage.app"
+    },
+    "client": [
+        {
+            "client_info": {
+                "mobilesdk_app_id": "1:164948034426:android:8e91853399704dce100cc3",
+                "android_client_info": {
+                    "package_name": "com.sagardesign.wallpaperapp"
+                }
+            },
+            "oauth_client": [],
+            "api_key": [
+                {
+                    "current_key": "AIzaSyBCLzWmSbir8y62EltDX_X8nmRgkot86_Q"
+                }
+            ],
+            "services": {
+                "appinvite_service": {
+                    "other_platform_oauth_client": []
+                }
+            }
+        }
+    ],
+    "configuration_version": "1"
+}

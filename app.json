@@ -1,24 +1,49 @@
 {
   "expo": {
-    "name": "wallpaper-app",
+    "name": "WallpaperApp",
     "slug": "wallpaper-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "userInterfaceStyle": "light",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0A0A0A"
+    },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.sagardesign.wallpaperapp"
     },
     "android": {
-      "package": "com.anonymous.wallpaperapp"
-    },
-    "web": {
-      "bundler": "metro"
+      "googleServicesFile": "./google-services.json",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#0A0A0A"
+      },
+      "package": "com.sagardesign.wallpaperapp",
+      "versionCode": 1
     },
     "plugins": [
-      "expo-asset"
-    ]
+      "expo-font",
+      "expo-image-picker",
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow WallpaperApp to save wallpapers to your gallery.",
+          "savePhotosPermission": "Allow WallpaperApp to save wallpapers to your gallery.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "48c7300b-a242-4c4a-ab55-d47f9ab1ea43"
+      }
+    },
+    "owner": "sagar.design"
   }
 }
